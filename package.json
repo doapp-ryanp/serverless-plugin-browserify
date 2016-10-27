@@ -1,0 +1,30 @@
+{
+  "name": "serverless-plugin-browserify",
+  "version": "1.0.0",
+  "description": "Serverless v1.0 plugin that uses Browserify to bundle NodeJS Lambda functions.",
+  "main": "index.js",
+  "author": "Ryan Pendergast <ryan.pendergast@gmail.com> (http://rynop.com)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/doapp-ryanp/serverless-plugin-browserify.git"
+  },
+  "keywords": [
+    "serverless",
+    "1.0",
+    "plugin",
+    "browserify",
+    "bundle"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/doapp-ryanp/serverless-plugin-browserify/issues"
+  },
+  "homepage": "https://github.com/doapp-ryanp/serverless-plugin-browserify#readme",
+  "dependencies": {
+    "bluebird": "~3.4.6",
+    "browserify": "~13.1.1",
+    "fs-extra": "~0.30.0",
+    "xtend": "~4.0.1"
+  },
+  "devDependencies": {}
+}
