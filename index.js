@@ -96,6 +96,9 @@ class SlsBrowserify {
       // .then(this.compile)
       // .then(this.packExternalModules),
 
+      'before:deploy:function:deploy': () => BbPromise.bind(this)
+        .then(this.validate),
+
       'after:deploy:createDeploymentArtifacts': () => BbPromise.bind(this)
         .then(this.cleanup),
 
