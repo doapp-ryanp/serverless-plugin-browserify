@@ -4,26 +4,20 @@ const BbPromise = require('bluebird');
 
 const validate  = require('./lib/validate'),
       configure = require('./lib/configure'),
-      // const compile = require('./lib/compile');
+      bundle    = require('./lib/bundle'),
       cleanup   = require('./lib/cleanup');
-// const run = require('./lib/run');
-// const serve = require('./lib/serve');
-// const packExternalModules = require('./lib/packExternalModules');
 
 class SlsBrowserify {
   constructor(serverless, options) {
-    this.serverless = serverless;
-    this.options    = options;
+    this.serverless             = serverless;
+    this.options                = options;
+    this.globalBrowserifyConfig = {};
 
     Object.assign(
       this,
       validate,
-      configure
-      // compile,
-      // cleanup,
-      // run,
-      // serve,
-      // packExternalModules
+      configure,
+      bundle
     );
 
     this.commands = {
@@ -34,103 +28,61 @@ class SlsBrowserify {
           'compile',
         ],
         options:         {
-          out: {
+          out:      {
             usage:    'Path to output directory',
             shortcut: 'o',
           },
+          function: {
+            usage:    'Name of the function',
+            shortcut: 'f',
+            required: true,
+          },
         },
-        commands:        {
-          // invoke: {
-          //   usage:           'Run a function locally from the webpack output bundle',
-          //   lifecycleEvents: [
-          //     'invoke',
-          //   ],
-          //   options:         {
-          //     function: {
-          //       usage:    'Name of the function',
-          //       shortcut: 'f',
-          //       required: true,
-          //     },
-          //     path:     {
-          //       usage:    'Path to JSON file holding input data',
-          //       shortcut: 'p',
-          //     },
-          //   },
-          // },
-          // watch:  {
-          //   usage:           'Run a function from the webpack output bundle every time the source is changed',
-          //   lifecycleEvents: [
-          //     'watch',
-          //   ],
-          //   options:         {
-          //     function: {
-          //       usage:    'Name of the function',
-          //       shortcut: 'f',
-          //       required: true,
-          //     },
-          //     path:     {
-          //       usage:    'Path to JSON file holding input data',
-          //       shortcut: 'p',
-          //     },
-          //   },
-          // },
-          // serve:  {
-          //   usage:           'Simulate the API Gateway and serves lambdas locally',
-          //   lifecycleEvents: [
-          //     'serve',
-          //   ],
-          //   options:         {
-          //     port: {
-          //       usage:    'The local server port',
-          //       shortcut: 'p',
-          //     },
-          //   },
-          // },
-        },
+        commands:        {},
       },
     };
 
     this.hooks = {
+      //Handle `sls deploy`
       'before:deploy:createDeploymentArtifacts': () => BbPromise.bind(this)
-        .then(this.validate),
-      // .then(this.compile)
-      // .then(this.packExternalModules),
+        .then(this.validate)
+        .then(this.globalConfig)
+        .then(() => {
+          const functionNames = this.serverless.service.getAllFunctions();
+          const bundleQueue   = functionNames.map(functionName => {
+            return this.bundle(functionName);
+          });
 
-      'before:deploy:function:deploy': () => BbPromise.bind(this)
-        .then(this.validate),
+          return BbPromise.all(bundleQueue);
+        })
+        .catch(handleSkip),
 
-      'after:deploy:createDeploymentArtifacts': () => BbPromise.bind(this)
-        .then(this.cleanup),
+      //Handle `sls deploy function`
+      'before:deploy:function:packageFunction': () => BbPromise.bind(this)
+        .then(this.validate)
+        .then(this.globalConfig)
+        .then(() => {
+          const functionName = this.options.function;
+          return this.bundle(functionName);
+        })
+        .catch(handleSkip),
 
       'browserify:validate': () => BbPromise.bind(this)
         .then(this.validate)
-        .then(this.configure)
-        .catch((e)=> {
-          if ('skip' != e.statusCode) {
-            throw e;
-          } else {
-            console.error(e.message, 'SKIPPING bundling');
-          }
-        }),
-      //
-      // 'webpack:compile': () => BbPromise.bind(this)
-      //   .then(this.compile)
-      //   .then(this.packExternalModules),
-      //
-      // 'webpack:invoke:invoke': () => BbPromise.bind(this)
-      //   .then(this.validate)
-      //   .then(this.compile)
-      //   .then(this.run)
-      //   .then(out => this.serverless.cli.consoleLog(out)),
-      //
-      // 'webpack:watch:watch': () => BbPromise.bind(this)
-      //   .then(this.validate)
-      //   .then(this.watch),
-      //
-      // 'webpack:serve:serve': () => BbPromise.bind(this)
-      //   .then(this.validate)
-      //   .then(this.serve),
+        .then(() => {
+          const functionName = this.options.function;
+          return this.bundle(functionName);
+        })
+        .catch(handleSkip),
     };
+  }
+}
+
+function handleSkip(e) {
+  if ('skip' != e.statusCode) {
+    throw e;
+  } else {
+    this.serverless.cli.log(`WARNING: ${e.message} SKIPPING bundling`);
   }
 }
 
