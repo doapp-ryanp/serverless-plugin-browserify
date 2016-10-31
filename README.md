@@ -7,11 +7,6 @@ THIS PLUGIN IS NOT YET READY.
 A [Serverless](https://serverless.com) v1.0 plugin that uses [Browserify](https://github.com/substack/node-browserify) to bundle your NodeJS Lambda functions.
 
 Lambda's with less code start faster and run faster.  Lambda also has an account wide [deployment package size limit](http://docs.aws.amazon.com/lambda/latest/dg/limits.html).  Furthermore, [aws-sdk-js](https://github.com/aws/aws-sdk-js) now officially [supports browserify](https://github.com/aws/aws-sdk-js/issues/696).  I prefer Browserify over [webpack](https://webpack.github.io/) because I have found it supports more modules, optimizes better, and requires less configuration.   
-## TODO
-
--  smart include/exclude
--  fig out a way to override default packaging so does not have to be done 2x
--  try to standardize deploy process, https://github.com/serverless/serverless/pull/2561 starts to address this but my gut is there needs to be some serious re-work in the core
 
 With the example `package.json` and javascript code below, the default packaging for NodeJs lambdas in Serverless produces a zip file that is **11.3 MB**, because it blindly includes all of `node_modules` in the zip.
 
@@ -25,8 +20,6 @@ This plugin with 2 lines of configuration produces a zip file that is **400KB!**
     "rxjs": "^5.0.0-rc.1"
   },
 ```  
-
-Lambda code: 
 
 ```javascript
 const Rx      = require('rxjs/Rx');
@@ -87,6 +80,10 @@ When this plugin is enabled, and `package.individually` is `true`, running `serv
 If you want to see output of bundled file or zip simply set `SLS_DEBUG`.  Ex (using [Fish Shell](https://fishshell.com)): `env SLS_DEBUG=true sls deploy function -v -f usersGet`
 
 Also check out the [examples](./examples) directory
+
+### Bundle only
+
+Run `serverless browserify -f <functionName>`.  You can optionally dictate where the bundling output dir is by using the `-o` flag. Ex: `sls browserify -o /tmp/test -f pageUpdate`.
 
 ## FAQ
 

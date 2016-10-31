@@ -61,18 +61,13 @@ class SlsBrowserify {
       'before:deploy:function:packageFunction': () => BbPromise.bind(this)
         .then(this.validate)
         .then(this.globalConfig)
-        .then(() => {
-          const functionName = this.options.function;
-          return this.bundle(functionName);
-        })
+        .then(() => this.bundle(this.options.function))
         .catch(handleSkip),
 
       'browserify:validate': () => BbPromise.bind(this)
         .then(this.validate)
-        .then(() => {
-          const functionName = this.options.function;
-          return this.bundle(functionName);
-        })
+        .then(this.globalConfig)
+        .then(() => this.bundle(this.options.function))
         .catch(handleSkip),
     };
   }

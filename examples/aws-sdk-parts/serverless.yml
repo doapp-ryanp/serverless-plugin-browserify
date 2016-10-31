@@ -1,19 +1,55 @@
-service: serverless-plugin-browserify-aws-sdk-parts
+service: aws-sdk-parts-browserify-ex
+
+custom:
+  dev:
+    profile: browserify-ex
+  prod:
+    profile: browserify-ex
+#  browserify:
+#    disable: true
+
+package:
+  individually: true
+#  exclude:
+#    - excluded-by-default.json
 
 plugins:
-  - serverless-p
+  - serverless-plugin-browserify
 
 provider:
   name: aws
   runtime: nodejs4.3
-
-custom:
-  webpackIncludeModules: true # enable auto including modules
+  stage: dev
+  region: us-east-1
+  deploymentBucket: ${self:provider.stage}-useast1-slsdeploys.yourdomain.org
+  profile: ${self:custom.${self:provider.stage}.profile}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "s3:G*"
+        - "s3:L*"
+      Resource: "*"
 
 functions:
-  first:
-    handler: handler.hello
-    events:
-      - http:
-          method: GET
-          path: first
+  usersList:
+    name: ${self:provider.stage}-${self:service}-usersList
+    description: list users
+    handler: users/list.hello
+    memorySize: 512
+    timeout: 10
+    package:
+      exclude:
+        - "../lib/bigFile.json" #tell browserify to not parse, can't optimize, dont waste time
+      include:
+        - "../lib/bigFile.json" #gotta include it in our final zip, so require('../lib/bigFile.json') works
+
+  usersGet:
+    name: ${self:provider.stage}-${self:service}-usersGet
+    description: get user
+    handler: users/get.hello
+    memorySize: 512
+    timeout: 10

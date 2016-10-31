@@ -1,0 +1,18 @@
+{
+  "name": "aws-sdk-parts-browserify-ex",
+  "version": "0.0.1",
+  "description": "Showcase bundling de-coupled aws-sdk-js services",
+  "repository": {
+    "url": "https://github.com/doapp-ryanp/serverless-browserify"
+  },
+  "author": "Ryan Pendergast <ryan.pendergast@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.6.12",
+    "request": "^2.75.0",
+    "rxjs": "^5.0.0-rc.1"
+  },
+  "devDependencies": {
+    "serverless-plugin-browserify": "^1.0.0"
+  }
+}
