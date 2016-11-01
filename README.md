@@ -1,24 +1,28 @@
 # Serverless Browserify Plugin
 
-THIS PLUGIN IS NOT YET READY.
+**NOTE:** This plugin is waiting on merge and release of https://github.com/serverless/serverless/pull/2561
 
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 
 A [Serverless](https://serverless.com) v1.0 plugin that uses [Browserify](https://github.com/substack/node-browserify) to bundle your NodeJS Lambda functions.
 
-Lambda's with less code start faster and run faster.  Lambda also has an account wide [deployment package size limit](http://docs.aws.amazon.com/lambda/latest/dg/limits.html).  Furthermore, [aws-sdk-js](https://github.com/aws/aws-sdk-js) now officially [supports browserify](https://github.com/aws/aws-sdk-js/issues/696).  I prefer Browserify over [webpack](https://webpack.github.io/) because I have found it supports more modules, optimizes better, and requires less configuration.   
+Lambda's with smaller code start and run faster.  Lambda also has an account wide [deployment package size limit](http://docs.aws.amazon.com/lambda/latest/dg/limits.html).  
+
+[aws-sdk-js](https://github.com/aws/aws-sdk-js) now officially [supports browserify](https://github.com/aws/aws-sdk-js/issues/696).  Read more about why this kicks ass [on my blog](https://rynop.wordpress.com/2016/11/01/aws-sdk-for-javascript-now-fully-componentized/).
 
 With the example `package.json` and javascript code below, the default packaging for NodeJs lambdas in Serverless produces a zip file that is **11.3 MB**, because it blindly includes all of `node_modules` in the zip.
 
 This plugin with 2 lines of configuration produces a zip file that is **400KB!**
 
 ```
+...
   "dependencies": {
     "aws-sdk": "^2.6.12",
     "moment": "^2.15.2",
     "request": "^2.75.0",
     "rxjs": "^5.0.0-rc.1"
   },
+...
 ```  
 
 ```javascript
@@ -64,14 +68,11 @@ functions:
       description: get user
       handler: users/handler.hello      
       browserify:
-        exclude:
-          - ./someBig.json  #browserify can't optimize json, will take long time to parse for nothing
-      package:
-        include:
-          - ./someBig.json  #but we want the json file to be included in the resulting zip      
-        exclude:
-          - ./someBig.json  #this plugin will union browserify.exclude and this directive
+        noParse:
+          - ./someBig.json  #browserify can't optimize json, will take long time to parse for nothing      
 ```
+
+**Note:** `package.include` is ignored when using this plugin.  This is a foreign concept in Browserify, every use case I've ever run across can be handled by leveraging [browserify options](https://github.com/substack/node-browserify#browserifyfiles--opts). 
 
 ## Usage
 
@@ -87,5 +88,6 @@ Run `serverless browserify -f <functionName>`.  You can optionally dictate where
 
 ## FAQ
 
+- **Should I use Webpack instead of this plugin?** I prefer Browserify over [webpack](https://webpack.github.io/) because I have found it supports more modules, optimizes better, and requires less configuration.
 - **Why is UglifyJS not built-in?** No ES6 support.  [Issue](https://github.com/mishoo/UglifyJS2/issues/448) been open since 2014.
 - **My code is not bundling correctly** The bundled code is always stored in a tmp dir on your computer.  Set `SLS_DEBUG=true` then re-run your command to output the directory.  Fish Shell ex: `env SLS_DEBUG=true sls browserify`  
