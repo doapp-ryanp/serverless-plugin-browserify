@@ -6,7 +6,7 @@
 
 A [Serverless](https://serverless.com) v1.0 plugin that uses [Browserify](https://github.com/substack/node-browserify) to bundle your NodeJS Lambda functions.
 
-Lambda's with smaller code start and run faster.  Lambda also has an account wide [deployment package size limit](http://docs.aws.amazon.com/lambda/latest/dg/limits.html).  
+**Why?** Lambda's with smaller code start and run faster.  Lambda also has an account wide [deployment package size limit](http://docs.aws.amazon.com/lambda/latest/dg/limits.html).  
 
 [aws-sdk-js](https://github.com/aws/aws-sdk-js) now officially [supports browserify](https://github.com/aws/aws-sdk-js/issues/696).  Read more about why this kicks ass [on my blog](https://rynop.wordpress.com/2016/11/01/aws-sdk-for-javascript-now-fully-componentized/).
 
