@@ -64,6 +64,7 @@ class SlsBrowserify {
         .then(() => this.bundle(this.options.function))
         .catch(handleSkip),
 
+      //Handle `sls browserify`
       'browserify:validate': () => BbPromise.bind(this)
         .then(this.validate)
         .then(this.globalConfig)
@@ -74,7 +75,7 @@ class SlsBrowserify {
 }
 
 function handleSkip(e) {
-  if ('skip' != e.statusCode) {
+  if ('skip' != e.statusCode) { //User explicitly chose to skip this function's browserification
     throw e;
   } else {
     this.serverless.cli.log(`WARNING: ${e.message} SKIPPING bundling`);

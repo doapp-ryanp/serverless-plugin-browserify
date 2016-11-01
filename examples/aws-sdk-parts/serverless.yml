@@ -41,11 +41,9 @@ functions:
     handler: users/list.hello
     memorySize: 512
     timeout: 10
-    package:
-      exclude:
+    browserify:
+      noParse:
         - "../lib/bigFile.json" #tell browserify to not parse, can't optimize, dont waste time
-      include:
-        - "../lib/bigFile.json" #gotta include it in our final zip, so require('../lib/bigFile.json') works
 
   usersGet:
     name: ${self:provider.stage}-${self:service}-usersGet
