@@ -24,7 +24,7 @@ class SlsBrowserify {
         usage:           'Bundle NodeJS lambda with Browserify',
         lifecycleEvents: [
           'validate',
-          'compile',
+          'bundle',
         ],
         options:         {
           out:      {
