@@ -4,8 +4,7 @@ const BbPromise = require('bluebird');
 
 const validate  = require('./lib/validate'),
       configure = require('./lib/configure'),
-      bundle    = require('./lib/bundle'),
-      cleanup   = require('./lib/cleanup');
+      bundle    = require('./lib/bundle');
 
 class SlsBrowserify {
   constructor(serverless, options) {
