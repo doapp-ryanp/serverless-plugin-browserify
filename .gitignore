@@ -48,7 +48,6 @@ typings
 tools/**/*.js
 dev
 docs
-lib
 test
 tmp
 
