@@ -1,7 +1,5 @@
 # Serverless Browserify Plugin
 
-**NOTE:** This plugin is waiting on merge and release of https://github.com/serverless/serverless/pull/2561
-
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 
 A [Serverless](https://serverless.com) v1.0 plugin that uses [Browserify](https://github.com/substack/node-browserify) to bundle your NodeJS Lambda functions.
