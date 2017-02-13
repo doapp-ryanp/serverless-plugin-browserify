@@ -70,7 +70,7 @@ functions:
           - ./someBig.json  #browserify can't optimize json, will take long time to parse for nothing      
 ```
 
-**Note:** `package.include` is ignored when using this plugin.  This is a foreign concept in Browserify, every use case I've ever run across can be handled by leveraging [browserify options](https://github.com/substack/node-browserify#browserifyfiles--opts). 
+**Note:** `package.include` can be used with this plugin.  All other options can be handled by leveraging [browserify options](https://github.com/substack/node-browserify#browserifyfiles--opts) in your `serverless.yml` custom `browserify` section. 
 
 ## Usage
 
