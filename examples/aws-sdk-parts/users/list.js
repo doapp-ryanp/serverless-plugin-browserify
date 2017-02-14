@@ -1,7 +1,8 @@
 'use strict';
 
 let S3      = require('aws-sdk/clients/s3'),
-    bigFile = require('../lib/bigFile.json');
+    bigFile = require('../lib/bigFile.json'),
+    models  = require('../models');
 
 let s3 = new S3();
 
