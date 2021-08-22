@@ -30,11 +30,13 @@ class SlsBrowserify {
           out:      {
             usage:    'Path to output directory',
             shortcut: 'o',
+            type: 'string',
           },
           function: {
             usage:    'Name of the function',
             shortcut: 'f',
             required: true,
+            type: 'string',
           },
         },
         commands:        {},
